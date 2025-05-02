@@ -1,23 +1,29 @@
 import tkinter as tk
-import Ball as bl
-
-
+import Box as bl
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title("Шар с инерционным движением")
-
-    canvas = tk.Canvas(root, width=800, height=800, bg="white")
+    canvas = tk.Canvas(root, width=800, height=600, bg="white")
     canvas.pack()
 
-    # Границы игрового поля
-    rect_coords = (100, 100, 700, 500)
-    canvas.create_rectangle(*rect_coords, outline="black", width=2)
+    # Границы поля (4 линии)
+    border_lines = [
+        (100, 100, 720, 100),  # верх
+        (720, 100, 720, 520),  # право
+        (720, 520, 100, 520),  # низ
+        (100, 520, 100, 100)  # лево
+    ]
 
-    # Создаем шар
-    ball = bl.Ball(canvas, rect_coords)
+    # Препятствия (линии)
+    obstacles = [
+        (220, 100, 220, 300),
+        (220, 300, 520, 300),
+        (520, 300, 520, 200),
+        (400, 100, 400, 200)
+    ]
 
-    # Инструкция
-    canvas.create_text(350, 50, text="Используйте стрелки для движения", font=("Arial", 14))
+    # Отрисовка линий
+    for line in border_lines + obstacles:
+        canvas.create_line(*line, fill="black", width=2)
 
     root.mainloop()
