@@ -5,10 +5,10 @@ import Barrel as br
 import Obstacles as ob
 
 # Настройки
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 700
-GRID_ROWS = 10
-GRID_COLS = 10
+SCREEN_WIDTH = 700  # 7 клеток по 100 пикселей
+SCREEN_HEIGHT = 600  # 6 клеток по 100 пикселей
+GRID_ROWS = 6       # 6 рядов
+GRID_COLS = 7       # 7 колонок
 CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
 CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
 
@@ -23,17 +23,31 @@ def main():
     clock = pygame.time.Clock()
 
     # Создание игровых объектов
-    robot = rb.Robot()
+    robot = rb.Robot(4,2)
+
     barrels = [
-        br.Barrel(3, 3),
-        br.Barrel(5, 5),
-        br.Barrel(2, 7)
+        br.Barrel(5, 2, (215,31,31)),
+        br.Barrel(1, 2, (43,213,134))
     ]
-    obstacles = [
-        ob.Obstacle(7, 7),
-        ob.Obstacle(8, 8),
-        ob.Obstacle(4, 4)
-    ]
+
+    obstacles = []
+
+    for x in range(GRID_COLS):
+        obstacles.append(ob.Obstacle(x, 0))
+        obstacles.append(ob.Obstacle(x, GRID_ROWS - 1))
+
+    for y in range(1, GRID_ROWS - 1):
+        obstacles.append(ob.Obstacle(0, y))
+        obstacles.append(ob.Obstacle(GRID_COLS - 1, y))
+
+    obstacles.append(ob.Obstacle(3,1))
+    obstacles.append(ob.Obstacle(4, 1))
+    obstacles.append(ob.Obstacle(2, 3))
+    obstacles.append(ob.Obstacle(3, 3))
+    obstacles.append(ob.Obstacle(3, 4))
+    obstacles.append(ob.Obstacle(2, 4))
+    obstacles.append(ob.Obstacle(4, 4))
+    obstacles.append(ob.Obstacle(5, 4))
 
     # Основной игровой цикл
     running = True
@@ -73,7 +87,7 @@ def main():
         for obstacle in obstacles:
             obstacle.draw(screen)
         for barrel in barrels:
-            barrel.draw(screen)
+            barrel.draw(screen,)
         robot.draw(screen)
 
         pygame.display.flip()

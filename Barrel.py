@@ -2,19 +2,19 @@ import pygame
 
 # Настройки
 SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 700
-GRID_ROWS = 10
-GRID_COLS = 10
+SCREEN_HEIGHT = 600
+GRID_ROWS = 6
+GRID_COLS = 6
 CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
 CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
-BARREL_COLOR = (139, 69, 19)  # Коричневый
 
 class Barrel:
     """Бочка, которую можно двигать"""
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, b_color):
         self.x = x
         self.y = y
+        self.b_color = b_color
         self.rect = pygame.Rect(
             self.x * CELL_WIDTH,
             self.y * CELL_HEIGHT,
@@ -49,4 +49,8 @@ class Barrel:
         return True
 
     def draw(self, screen):
-        pygame.draw.rect(screen, BARREL_COLOR, self.rect)
+        pygame.draw.rect(screen, self.b_color, self.rect)
+
+    def is_on_target(self, target):
+        return self.x == target.x and self.y == target.y
+

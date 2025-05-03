@@ -1,14 +1,13 @@
 import pygame
-import sys
 
 # Настройки
 SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 700
-GRID_ROWS = 10
-GRID_COLS = 10
+SCREEN_HEIGHT = 600
+GRID_ROWS = 6
+GRID_COLS = 6
 CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
 CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
-OBSTACLE_COLOR = (255, 0, 0)  # Красный
+OBSTACLE_COLOR = (145, 145, 255)
 
 class Obstacle:
     """Неподвижное препятствие"""
@@ -22,6 +21,10 @@ class Obstacle:
             CELL_WIDTH,
             CELL_HEIGHT
         )
+        self.fill_color = (110, 115, 247)  # Красный цвет заливки
+        self.border_color = (0, 0, 0)  # Черная граница
+        self.border_width = 1
 
     def draw(self, screen):
-        pygame.draw.rect(screen, OBSTACLE_COLOR, self.rect)
+        pygame.draw.rect(screen, self.fill_color, self.rect)
+        pygame.draw.rect(screen, self.border_color, self.rect, self.border_width)

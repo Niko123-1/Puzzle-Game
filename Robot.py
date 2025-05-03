@@ -2,19 +2,19 @@ import pygame
 
 # Настройки
 SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 700
-GRID_ROWS = 10
-GRID_COLS = 10
+SCREEN_HEIGHT = 600
+GRID_ROWS = 6
+GRID_COLS = 6
 CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
 CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
-ROBOT_COLOR = (0, 255, 0)  # Зеленый
+ROBOT_COLOR = (188, 198, 52)  # Зеленый
 
 class Robot:
     """Робот, который может толкать бочки"""
 
-    def __init__(self):
-        self.x = 0
-        self.y = 0
+    def __init__(self,x,y):
+        self.x = x
+        self.y = y
         self.rect = pygame.Rect(
             self.x * CELL_WIDTH,
             self.y * CELL_HEIGHT,
