@@ -3,14 +3,8 @@ import sys
 import Robot as rb
 import Barrel as br
 import Obstacles as ob
-
-# Настройки
-SCREEN_WIDTH = 700  # 7 клеток по 100 пикселей
-SCREEN_HEIGHT = 600  # 6 клеток по 100 пикселей
-GRID_ROWS = 6       # 6 рядов
-GRID_COLS = 7       # 7 колонок
-CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
-CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
+import Target as tg
+import Constant as con
 
 WHITE = (255, 255, 255)
 GRID_COLOR = (50, 50, 50)  # Темно-серый
@@ -18,7 +12,7 @@ GRID_COLOR = (50, 50, 50)  # Темно-серый
 def main():
     # Инициализация pygame
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode((con.SCREEN_WIDTH, con.SCREEN_HEIGHT))
     pygame.display.set_caption("Робот и бочки")
     clock = pygame.time.Clock()
 
@@ -32,13 +26,13 @@ def main():
 
     obstacles = []
 
-    for x in range(GRID_COLS):
+    for x in range(con.GRID_COLS):
         obstacles.append(ob.Obstacle(x, 0))
-        obstacles.append(ob.Obstacle(x, GRID_ROWS - 1))
+        obstacles.append(ob.Obstacle(x, con.GRID_ROWS - 1))
 
-    for y in range(1, GRID_ROWS - 1):
+    for y in range(1, con.GRID_ROWS - 1):
         obstacles.append(ob.Obstacle(0, y))
-        obstacles.append(ob.Obstacle(GRID_COLS - 1, y))
+        obstacles.append(ob.Obstacle(con.GRID_COLS - 1, y))
 
     obstacles.append(ob.Obstacle(3,1))
     obstacles.append(ob.Obstacle(4, 1))
@@ -48,6 +42,8 @@ def main():
     obstacles.append(ob.Obstacle(2, 4))
     obstacles.append(ob.Obstacle(4, 4))
     obstacles.append(ob.Obstacle(5, 4))
+
+    target = tg.Target(5,1, (215,31,31))
 
     # Основной игровой цикл
     running = True
@@ -78,17 +74,18 @@ def main():
         screen.fill(WHITE)
 
         # Отрисовка сетки
-        for x in range(0, SCREEN_WIDTH, CELL_WIDTH):
-            pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, SCREEN_HEIGHT))
-        for y in range(0, SCREEN_HEIGHT, CELL_HEIGHT):
-            pygame.draw.line(screen, GRID_COLOR, (0, y), (SCREEN_WIDTH, y))
+        for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
+            pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, con.SCREEN_HEIGHT))
+        for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
+            pygame.draw.line(screen, GRID_COLOR, (0, y), (con.SCREEN_WIDTH, y))
 
         # Отрисовка объектов
         for obstacle in obstacles:
             obstacle.draw(screen)
         for barrel in barrels:
-            barrel.draw(screen,)
+            barrel.draw(screen)
         robot.draw(screen)
+        target.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)

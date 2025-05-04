@@ -1,13 +1,7 @@
 import pygame
+import Constant as con
 
-# Настройки
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
-GRID_ROWS = 6
-GRID_COLS = 6
-CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
-CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
-ROBOT_COLOR = (188, 198, 52)  # Зеленый
+ROBOT_COLOR = (188, 198, 52)
 
 class Robot:
     """Робот, который может толкать бочки"""
@@ -16,10 +10,10 @@ class Robot:
         self.x = x
         self.y = y
         self.rect = pygame.Rect(
-            self.x * CELL_WIDTH,
-            self.y * CELL_HEIGHT,
-            CELL_WIDTH,
-            CELL_HEIGHT
+            self.x * con.CELL_WIDTH,
+            self.y * con.CELL_HEIGHT,
+            con.CELL_WIDTH,
+            con.CELL_HEIGHT
         )
 
     def move(self, dx, dy, barrels, obstacles):
@@ -28,7 +22,7 @@ class Robot:
         new_y = self.y + dy
 
         # Проверка границ
-        if not (0 <= new_x < GRID_COLS and 0 <= new_y < GRID_ROWS):
+        if not (0 <= new_x < con.GRID_COLS and 0 <= new_y < con.GRID_ROWS):
             return False
 
         # Проверка препятствий
@@ -51,8 +45,8 @@ class Robot:
         # Перемещаем робота
         self.x = new_x
         self.y = new_y
-        self.rect.x = self.x * CELL_WIDTH
-        self.rect.y = self.y * CELL_HEIGHT
+        self.rect.x = self.x * con.CELL_WIDTH
+        self.rect.y = self.y * con.CELL_HEIGHT
         return True
 
     def draw(self, screen):
