@@ -5,3 +5,6 @@ GRID_ROWS = 6
 GRID_COLS = 7
 CELL_WIDTH = SCREEN_WIDTH // GRID_COLS
 CELL_HEIGHT = SCREEN_HEIGHT // GRID_ROWS
+ROBOT_COLOR = (188, 198, 52)
+DETAIL_COLOR = (0, 0, 0)  # Цвет для деталей (немного темнее основного)
+EYE_COLOR = (255, 255, 255)    # Цвет глаз

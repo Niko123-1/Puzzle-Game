@@ -1,7 +1,7 @@
+from unittest.mock import right
+
 import pygame
 import Constant as con
-
-ROBOT_COLOR = (188, 198, 52)
 
 class Robot:
     """Робот, который может толкать бочки"""
@@ -50,4 +50,39 @@ class Robot:
         return True
 
     def draw(self, screen):
-        pygame.draw.rect(screen, ROBOT_COLOR, self.rect)
+        # Основной прямоугольник робота
+        pygame.draw.rect(screen, con.ROBOT_COLOR, self.rect)
+
+        # Размеры маленьких прямоугольников (1/4 от размера клетки)
+        small_rect_size = con.CELL_WIDTH // 4
+
+        # Координаты 4 углов основного прямоугольника
+        corners = [
+            (self.rect.left, self.rect.top),  # Левый верхний
+            (self.rect.right - small_rect_size, self.rect.top),  # Правый верхний
+            (self.rect.left, self.rect.bottom - small_rect_size),  # Левый нижний
+            (self.rect.right - small_rect_size, self.rect.bottom - small_rect_size)  # Правый нижний
+        ]
+
+        # Колеса по углам робота
+        for corner in corners:
+            small_rect = pygame.Rect(corner[0], corner[1], small_rect_size, small_rect_size)
+            pygame.draw.rect(screen, con.DETAIL_COLOR, small_rect)
+
+        # Глаза
+        eye_radius = small_rect_size // 4
+        left_eye_pos = (self.rect.left + con.CELL_WIDTH // 3, self.rect.top + con.CELL_HEIGHT // 3)
+        right_eye_pos = (self.rect.right - con.CELL_WIDTH // 3, self.rect.top + con.CELL_HEIGHT // 3)
+
+        pygame.draw.circle(screen, con.EYE_COLOR, left_eye_pos, eye_radius)
+        pygame.draw.circle(screen, con.EYE_COLOR, right_eye_pos, eye_radius)
+
+        mouth_width = con.CELL_WIDTH // 2
+        mouth_height = 5
+        mouth_rect = pygame.Rect(
+            self.rect.centerx - mouth_width // 2,
+            self.rect.centery + 10,
+            mouth_width,
+            mouth_height
+        )
+        pygame.draw.rect(screen, con.EYE_COLOR, mouth_rect)  # Чёрный прямоугольник

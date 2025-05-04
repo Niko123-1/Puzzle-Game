@@ -15,9 +15,21 @@ class Target:
             con.CELL_WIDTH,
             con.CELL_HEIGHT
         )
-        self.fill_color = (110, 115, 247)  # Красный цвет заливки
-        self.border_color = (0, 0, 0)  # Черная граница
-        self.border_width = 1
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.t_color, self.rect)
+        # Создаем временную поверхность с прозрачностью
+        transparent_surface = pygame.Surface((con.CELL_WIDTH, con.CELL_HEIGHT), pygame.SRCALPHA)
+
+        # Рисуем круг на временной поверхности
+        circle_center = (con.CELL_WIDTH // 2, con.CELL_HEIGHT // 2)
+        circle_radius = min(con.CELL_WIDTH, con.CELL_HEIGHT) // 2 - 4  # -4 для отступа от краев
+
+        pygame.draw.circle(
+            transparent_surface,
+            self.t_color,
+            circle_center,
+            circle_radius
+        )
+
+        # Отображаем временную поверхность на экране
+        screen.blit(transparent_surface, (self.rect.x, self.rect.y))

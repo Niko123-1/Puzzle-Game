@@ -42,7 +42,22 @@ class Barrel:
         return True
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.b_color, self.rect)
+        # Создаем временную поверхность с прозрачностью
+        transparent_surface = pygame.Surface((con.CELL_WIDTH, con.CELL_HEIGHT), pygame.SRCALPHA)
+
+        # Рисуем круг на временной поверхности
+        circle_center = (con.CELL_WIDTH // 2, con.CELL_HEIGHT // 2)
+        circle_radius = min(con.CELL_WIDTH, con.CELL_HEIGHT) // 2 - 4  # -4 для отступа от краев
+
+        pygame.draw.circle(
+            transparent_surface,
+            self.b_color,
+            circle_center,
+            circle_radius
+        )
+
+        # Отображаем временную поверхность на экране
+        screen.blit(transparent_surface, (self.rect.x, self.rect.y))
 
     def is_on_target(self, target):
         return self.x == target.x and self.y == target.y and self.b_color == target.t_color
