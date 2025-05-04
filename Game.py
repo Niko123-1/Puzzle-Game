@@ -5,6 +5,8 @@ import Barrel as br
 import Obstacles as ob
 import Target as tg
 import Constant as con
+from tkinter import messagebox
+import tkinter as tk
 
 WHITE = (255, 255, 255)
 GRID_COLOR = (50, 50, 50)  # Темно-серый
@@ -50,13 +52,16 @@ def main():
 
     # Основной игровой цикл
     running = True
+    victory_shown = False
+    victory_delay = 0  # Задержка перед показом сообщения (в кадрах)
+
     while running:
         # Обработка событий
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-            # Управление роботом
+            # Управление роботом (остается без изменений)
             if event.type == pygame.KEYDOWN:
                 dx, dy = 0, 0
                 if event.key == pygame.K_UP:
@@ -73,16 +78,13 @@ def main():
                 if dx != 0 or dy != 0:
                     robot.move(dx, dy, barrels, obstacles)
 
-        # Отрисовка
+        # Отрисовка (остается без изменений)
         screen.fill(WHITE)
-
-        # Отрисовка сетки
         for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
             pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, con.SCREEN_HEIGHT))
         for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
             pygame.draw.line(screen, GRID_COLOR, (0, y), (con.SCREEN_WIDTH, y))
 
-        # Отрисовка объектов
         for obstacle in obstacles:
             obstacle.draw(screen)
         for barrel in barrels:
@@ -90,6 +92,26 @@ def main():
         robot.draw(screen)
         for target in targets:
             target.draw(screen)
+
+        # Проверка победы
+        all_on_target = True
+        for barrel in barrels:
+            on_target = False
+            for target in targets:
+                if barrel.is_on_target(target):
+                    on_target = True
+                    break
+            if not on_target:
+                all_on_target = False
+                break
+
+        if all_on_target and not victory_shown:
+            victory_delay += 1  # Увеличиваем счетчик задержки
+            if victory_delay >= 5:  # Ждем 5 кадров (~0.08 сек при 60 FPS)
+                root = tk.Tk()
+                root.withdraw()
+                messagebox.showinfo("Победа!", "В главное меню")
+                victory_shown = True
 
         pygame.display.flip()
         clock.tick(60)
