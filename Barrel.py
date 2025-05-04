@@ -1,6 +1,7 @@
 import pygame
 import Constant as con
 
+
 class Barrel:
     """Бочка, которую можно двигать"""
 

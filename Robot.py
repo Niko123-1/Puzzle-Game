@@ -2,6 +2,7 @@ from math import pi
 import pygame
 import Constant as con
 
+
 class Robot:
     """Робот, который может толкать бочки"""
 

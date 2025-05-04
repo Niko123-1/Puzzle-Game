@@ -8,8 +8,6 @@ import Constant as con
 from tkinter import messagebox
 import tkinter as tk
 
-WHITE = (255, 255, 255)
-GRID_COLOR = (50, 50, 50)  # Темно-серый
 
 def main():
     # Инициализация pygame
@@ -79,20 +77,23 @@ def main():
                     robot.move(dx, dy, barrels, obstacles)
 
         # Отрисовка (остается без изменений)
-        screen.fill(WHITE)
+        screen.fill(con.WHITE)
         for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
-            pygame.draw.line(screen, GRID_COLOR, (x, 0), (x, con.SCREEN_HEIGHT))
+            pygame.draw.line(screen, con.GRID_COLOR, (x, 0), (x, con.SCREEN_HEIGHT))
         for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
-            pygame.draw.line(screen, GRID_COLOR, (0, y), (con.SCREEN_WIDTH, y))
+            pygame.draw.line(screen, con.GRID_COLOR, (0, y), (con.SCREEN_WIDTH, y))
+
+        for target in targets:
+            target.draw(screen)
+
+        for barrel in barrels:
+            barrel.draw(screen)
 
         for obstacle in obstacles:
             obstacle.draw(screen)
-        for barrel in barrels:
-            barrel.draw(screen)
+
         robot.update_smile(barrels, targets)
         robot.draw(screen)
-        for target in targets:
-            target.draw(screen)
 
         # Проверка победы
         all_on_target = True
