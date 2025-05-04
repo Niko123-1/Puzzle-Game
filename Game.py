@@ -89,6 +89,7 @@ def main():
             obstacle.draw(screen)
         for barrel in barrels:
             barrel.draw(screen)
+        robot.update_smile(barrels, targets)
         robot.draw(screen)
         for target in targets:
             target.draw(screen)
@@ -110,7 +111,7 @@ def main():
             if victory_delay >= 5:  # Ждем 5 кадров (~0.08 сек при 60 FPS)
                 root = tk.Tk()
                 root.withdraw()
-                messagebox.showinfo("Победа!", "В главное меню")
+                messagebox.showinfo("Победа!", "В главное меню",)
                 victory_shown = True
 
         pygame.display.flip()
