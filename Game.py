@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, Label, Button
 import Constant as con
 import Robot as rb
 import Barrel as br
@@ -13,19 +13,71 @@ class Direction(Enum):
     LEFT = 2
     RIGHT = 3
 
+
 class Game:
     def __init__(self, root):
         self.root = root
-        self.root.title("Робот и бочки")
+        self.root.title("Обезвредить бочки!!!")
+        self.root.state('zoomed')
+        # Инициализация переменных
+        self.victory_shown = False
+        self.current_level = None
+        self.canvas = None  # Будет создаваться при старте уровня
 
-        self.canvas = tk.Canvas(root, width=con.SCREEN_WIDTH, height=con.SCREEN_HEIGHT, bg=con.WHITE)
+        # Показываем меню уровней
+        self.level_menu()
+
+    def level_menu(self):
+        """Создаёт интерфейс выбора уровня."""
+        self.clear_window()
+
+        # Сбрасываем состояние игры
+        self.victory_shown = False
+        if hasattr(self, 'robot'):
+            del self.robot
+        if hasattr(self, 'barrels'):
+            del self.barrels
+        if hasattr(self, 'targets'):
+            del self.targets
+        if hasattr(self, 'obstacles'):
+            del self.obstacles
+
+        label = tk.Label(self.root, text="Выберите уровень:", font=("Arial", 14))
+        label.pack(pady=20)
+
+        level1_btn = tk.Button(self.root, text="Уровень 1",
+                               command=lambda: self.start_level(1),
+                               width=15, height=2)
+        level1_btn.pack(pady=10)
+
+        level2_btn = tk.Button(self.root, text="Уровень 2",
+                               command=lambda: self.start_level(2),
+                               width=15, height=2)
+        level2_btn.pack(pady=10)
+
+    def clear_window(self):
+        """Очищает окно от всех виджетов."""
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+        # Если canvas существует, уничтожаем его
+        if self.canvas:
+            self.canvas.destroy()
+            self.canvas = None
+
+    def start_level(self, level_num):
+        """Запускает выбранный уровень."""
+        self.current_level = level_num
+        self.clear_window()
+
+        # Создаем новый canvas для игры
+        self.canvas = tk.Canvas(self.root, width=con.SCREEN_WIDTH, height=con.SCREEN_HEIGHT, bg=con.WHITE)
         self.canvas.pack()
 
-        self.setup_game()
+        # Настраиваем игру
+        self.setup_game(level_num)
         self.bind_keys()
         self.draw_grid()
-
-        self.victory_shown = False
 
     def draw_grid(self):
         for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
@@ -33,20 +85,54 @@ class Game:
         for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
             self.canvas.create_line(0, y, con.SCREEN_WIDTH, y, fill=con.GRID_COLOR)
 
-    def setup_game(self):
-        # Создаем игровые объекты
+    def setup_game(self, level_num=1):
+        """Настраивает игровые объекты для выбранного уровня."""
+        # Очищаем старые объекты если они есть
+        if hasattr(self, 'robot'):
+            del self.robot
+        if hasattr(self, 'barrels'):
+            del self.barrels
+        if hasattr(self, 'targets'):
+            del self.targets
+        if hasattr(self, 'obstacles'):
+            del self.obstacles
+
+        # Создаем робота
         self.robot = rb.Robot(self.canvas, 4, 2)
 
-        self.barrels = [
-            br.Barrel(self.canvas, 5, 2, con.TARGET_COLOR1),
-            br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
-        ]
+        # Препятствия и цели для разных уровней
+        if level_num == 1:
+            self.barrels = [
+                br.Barrel(self.canvas, 5, 2, con.TARGET_COLOR1),
+                br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
+            ]
 
-        # Препятствия
-        self.obstacles = []
-        extra_obstacles = [(3, 1), (4, 1), (2, 3), (3, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
+            self.targets = [
+                tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
+                tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
+            ]
 
-        # Границы
+            # Препятствия для уровня 1
+            self.obstacles = []
+            extra_obstacles = [(3, 1), (4, 1), (2, 3), (3, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
+
+        elif level_num == 2:
+
+            self.barrels = [
+                br.Barrel(self.canvas, 4, 2, con.TARGET_COLOR1),
+                br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
+            ]
+
+            self.targets = [
+                tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
+                tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
+            ]
+
+            # Препятствия для уровня 1
+            self.obstacles = []
+            extra_obstacles = [(3, 1), (4, 1), (3, 3), (2, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
+
+        # Границы для всех уровней
         for x in range(con.GRID_COLS):
             self.obstacles.append(ob.Obstacle(self.canvas, x, 0))
             self.obstacles.append(ob.Obstacle(self.canvas, x, con.GRID_ROWS - 1))
@@ -59,12 +145,6 @@ class Game:
         for (x, y) in extra_obstacles:
             if 0 <= x < con.GRID_COLS and 0 <= y < con.GRID_ROWS:
                 self.obstacles.append(ob.Obstacle(self.canvas, x, y))
-
-        # Цели
-        self.targets = [
-            tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
-            tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
-        ]
 
     def bind_keys(self):
         self.root.bind("<Up>", lambda e: self.move_robot(Direction.UP))
@@ -147,8 +227,10 @@ class Game:
         for barrel in self.barrels:
             on_target = False
             for target in self.targets:
-                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color:
+                if barrel.x == target.x and barrel.y == target.y:
                     on_target = True
+                    # Поднимаем эту бочку на передний план
+                    self.canvas.tag_raise(barrel.id)
                     break
             if not on_target:
                 all_on_target = False
@@ -157,6 +239,7 @@ class Game:
         if all_on_target:
             self.victory_shown = True
             self.robot.update_smile(self.barrels, self.targets)
-            messagebox.showinfo("Победа!", "Все бочки на месте!")
-            self.root.after(1000, self.root.destroy)
-
+            messagebox.showinfo("Победа!", "Все бочки обезврежены!")
+            # Возвращаемся в меню
+            self.root.after(100, self.level_menu)
+            self.victory_shown = False  # Сбрасываем флаг для следующей игры
