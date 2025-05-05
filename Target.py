@@ -23,17 +23,17 @@ class Target:
         circle_center = (con.CELL_WIDTH // 2, con.CELL_HEIGHT // 2)
         max_radius = min(con.CELL_WIDTH, con.CELL_HEIGHT) // 2 - 4  # -4 для отступа от краев
 
-        # Количество кругов в мишени (можно настроить)
+        # Количество кругов в мишени
         circle_count = 3
         for i in range(circle_count, 0, -1):
             # Вычисляем радиус текущего круга
             radius = max_radius * i / circle_count
 
-            # Чередуем цвет (можно настроить цвета)
+            # Чередуем цвет
             if i % 2 == 1:
                 color = self.t_color
             else:
-                # Альтернативный цвет - можно задать или вычислять
+                # Альтернативный цвет
                 color = (122, 133, 145)
 
             pygame.draw.circle(
