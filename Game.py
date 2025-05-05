@@ -1,106 +1,162 @@
-import pygame
-import sys
+import tkinter as tk
+from tkinter import messagebox
+import Constant as con
 import Robot as rb
 import Barrel as br
-import Obstacles as ob
 import Target as tg
-import Constant as con
-from tkinter import messagebox
-import tkinter as tk
+import Obstacles as ob
+from enum import Enum
 
+class Direction(Enum):
+    UP = 0
+    DOWN = 1
+    LEFT = 2
+    RIGHT = 3
 
-def main():
-    # Инициализация pygame
-    pygame.init()
-    screen = pygame.display.set_mode((con.SCREEN_WIDTH, con.SCREEN_HEIGHT))
-    pygame.display.set_caption("Робот и бочки")
-    clock = pygame.time.Clock()
+class Game:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Робот и бочки")
 
-    # Создание игровых объектов
-    robot = rb.Robot(4,2)
+        self.canvas = tk.Canvas(root, width=con.SCREEN_WIDTH, height=con.SCREEN_HEIGHT, bg=con.WHITE)
+        self.canvas.pack()
 
-    barrels = [
-        br.Barrel(5, 2, (215,31,31)),
-        br.Barrel(1, 2, (43,213,134))
-    ]
+        self.setup_game()
+        self.bind_keys()
+        self.draw_grid()
 
-    extra_obstacles = [(3, 1),(4, 1),(2, 3),(3, 3),(3, 4),(2, 4),(4, 4),(5, 4)]
-    obstacles = ob.Obstacle.place_obstacles(extra_obstacles)
+        self.victory_shown = False
 
-    targets = []
-
-    targets.append(tg.Target(5,1, (215,31,31)))
-    targets.append(tg.Target(1,4, (43,213,134)))
-
-    # Основной игровой цикл
-    running = True
-    victory_shown = False
-    victory_delay = 0  # Задержка перед показом сообщения (в кадрах)
-
-    while running:
-        # Обработка событий
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            # Управление роботом (остается без изменений)
-            if event.type == pygame.KEYDOWN:
-                dx, dy = 0, 0
-                if event.key == pygame.K_UP:
-                    dy = -1
-                elif event.key == pygame.K_DOWN:
-                    dy = 1
-                elif event.key == pygame.K_LEFT:
-                    dx = -1
-                elif event.key == pygame.K_RIGHT:
-                    dx = 1
-                elif event.key == pygame.K_ESCAPE:
-                    running = False
-
-                if dx != 0 or dy != 0:
-                    robot.move(dx, dy, barrels, obstacles)
-
-        # Отрисовка (остается без изменений)
-        screen.fill(con.WHITE)
+    def draw_grid(self):
         for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
-            pygame.draw.line(screen, con.GRID_COLOR, (x, 0), (x, con.SCREEN_HEIGHT))
+            self.canvas.create_line(x, 0, x, con.SCREEN_HEIGHT, fill=con.GRID_COLOR)
         for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
-            pygame.draw.line(screen, con.GRID_COLOR, (0, y), (con.SCREEN_WIDTH, y))
+            self.canvas.create_line(0, y, con.SCREEN_WIDTH, y, fill=con.GRID_COLOR)
 
-        for target in targets:
-            target.draw(screen)
+    def setup_game(self):
+        # Создаем игровые объекты
+        self.robot = rb.Robot(self.canvas, 4, 2)
 
-        for barrel in barrels:
-            barrel.draw(screen)
+        self.barrels = [
+            br.Barrel(self.canvas, 5, 2, con.TARGET_COLOR1),
+            br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
+        ]
 
-        for obstacle in obstacles:
-            obstacle.draw(screen)
+        # Препятствия
+        self.obstacles = []
+        extra_obstacles = [(3, 1), (4, 1), (2, 3), (3, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
 
-        robot.update_smile(barrels, targets)
-        robot.draw(screen)
+        # Границы
+        for x in range(con.GRID_COLS):
+            self.obstacles.append(ob.Obstacle(self.canvas, x, 0))
+            self.obstacles.append(ob.Obstacle(self.canvas, x, con.GRID_ROWS - 1))
+
+        for y in range(1, con.GRID_ROWS - 1):
+            self.obstacles.append(ob.Obstacle(self.canvas, 0, y))
+            self.obstacles.append(ob.Obstacle(self.canvas, con.GRID_COLS - 1, y))
+
+        # Дополнительные препятствия
+        for (x, y) in extra_obstacles:
+            if 0 <= x < con.GRID_COLS and 0 <= y < con.GRID_ROWS:
+                self.obstacles.append(ob.Obstacle(self.canvas, x, y))
+
+        # Цели
+        self.targets = [
+            tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
+            tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
+        ]
+
+    def bind_keys(self):
+        self.root.bind("<Up>", lambda e: self.move_robot(Direction.UP))
+        self.root.bind("<Down>", lambda e: self.move_robot(Direction.DOWN))
+        self.root.bind("<Left>", lambda e: self.move_robot(Direction.LEFT))
+        self.root.bind("<Right>", lambda e: self.move_robot(Direction.RIGHT))
+        self.root.bind("<Escape>", lambda e: self.root.destroy())
+
+    def move_robot(self, direction):
+        dx, dy = 0, 0
+        if direction == Direction.UP:
+            dy = -1
+        elif direction == Direction.DOWN:
+            dy = 1
+        elif direction == Direction.LEFT:
+            dx = -1
+        elif direction == Direction.RIGHT:
+            dx = 1
+
+        if dx == 0 and dy == 0:
+            return
+
+        new_x = self.robot.x + dx
+        new_y = self.robot.y + dy
+
+        # Проверка границ
+        if not (0 <= new_x < con.GRID_COLS and 0 <= new_y < con.GRID_ROWS):
+            return
+
+        # Проверка препятствий
+        for obstacle in self.obstacles:
+            if obstacle.x == new_x and obstacle.y == new_y:
+                return
+
+        # Проверка бочек
+        pushed_barrel = None
+        for barrel in self.barrels:
+            if barrel.x == new_x and barrel.y == new_y:
+                pushed_barrel = barrel
+                break
+
+        if pushed_barrel:
+            if not self.move_barrel(pushed_barrel, dx, dy):
+                return
+
+        # Двигаем робота
+        self.robot.move(dx, dy)
+        self.robot.update_smile(self.barrels, self.targets)
 
         # Проверка победы
+        self.check_victory()
+
+    def move_barrel(self, barrel, dx, dy):
+        new_x = barrel.x + dx
+        new_y = barrel.y + dy
+
+        # Проверка границ
+        if not (0 <= new_x < con.GRID_COLS and 0 <= new_y < con.GRID_ROWS):
+            return False
+
+        # Проверка других бочек
+        for other_barrel in self.barrels:
+            if other_barrel != barrel and other_barrel.x == new_x and other_barrel.y == new_y:
+                return False
+
+        # Проверка препятствий
+        for obstacle in self.obstacles:
+            if obstacle.x == new_x and obstacle.y == new_y:
+                return False
+
+        # Двигаем бочку
+        barrel.move(dx, dy)
+        return True
+
+    def check_victory(self):
+        if self.victory_shown:
+            return
+
         all_on_target = True
-        for barrel in barrels:
+        for barrel in self.barrels:
             on_target = False
-            for target in targets:
-                if barrel.is_on_target(target):
+            for target in self.targets:
+                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color:
                     on_target = True
                     break
             if not on_target:
                 all_on_target = False
                 break
 
-        if all_on_target and not victory_shown:
-            victory_delay += 1  # Увеличиваем счетчик задержки
-            if victory_delay >= 5:  # Ждем 5 кадров (~0.08 сек при 60 FPS)
-                root = tk.Tk()
-                root.withdraw()
-                messagebox.showinfo("Победа!", "В главное меню",)
-                victory_shown = True
+        if all_on_target:
+            self.victory_shown = True
+            self.robot.update_smile(self.barrels, self.targets)
+            messagebox.showinfo("Победа!", "Все бочки на месте!")
+            self.root.after(1000, self.root.destroy)
 
-        pygame.display.flip()
-        clock.tick(60)
-
-    pygame.quit()
-    sys.exit()

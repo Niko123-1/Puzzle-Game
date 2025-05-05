@@ -1,47 +1,27 @@
-import pygame
 import Constant as con
+from GameObject import GameObject
 
 
-class Target:
-    """Неподвижное препятствие в виде мишени"""
+class Target(GameObject):
+    def __init__(self, canvas, x, y, color):
+        super().__init__(canvas, x, y)
+        self.color = color
+        self.draw()
 
-    def __init__(self, x, y, t_color):
-        self.x = x
-        self.y = y
-        self.t_color = t_color
-        self.rect = pygame.Rect(
-            self.x * con.CELL_WIDTH,
-            self.y * con.CELL_HEIGHT,
-            con.CELL_WIDTH,
-            con.CELL_HEIGHT
-        )
+    def draw(self):
+        x = self.x * con.CELL_WIDTH + con.CELL_WIDTH // 2
+        y = self.y * con.CELL_HEIGHT + con.CELL_HEIGHT // 2
+        max_radius = min(con.CELL_WIDTH, con.CELL_HEIGHT) // 2 - 5
 
-    def draw(self, screen):
-        # Создаем временную поверхность с прозрачностью
-        transparent_surface = pygame.Surface((con.CELL_WIDTH, con.CELL_HEIGHT), pygame.SRCALPHA)
-
-        circle_center = (con.CELL_WIDTH // 2, con.CELL_HEIGHT // 2)
-        max_radius = min(con.CELL_WIDTH, con.CELL_HEIGHT) // 2 - 4  # -4 для отступа от краев
-
-        # Количество кругов в мишени
-        circle_count = 3
-        for i in range(circle_count, 0, -1):
-            # Вычисляем радиус текущего круга
-            radius = max_radius * i / circle_count
-
-            # Чередуем цвет
+        # Рисуем мишень (3 круга)
+        for i in range(3, 0, -1):
+            radius = max_radius * i / 3
             if i % 2 == 1:
-                color = self.t_color
+                fill = self.color
             else:
-                # Альтернативный цвет
-                color = (122, 133, 145)
-
-            pygame.draw.circle(
-                transparent_surface,
-                color,
-                circle_center,
-                int(radius)
+                fill = "#7A8591"
+            self.canvas.create_oval(
+                x - radius, y - radius,
+                x + radius, y + radius,
+                fill=fill, outline=""
             )
-
-        # Отображаем временную поверхность на экране
-        screen.blit(transparent_surface, (self.rect.x, self.rect.y))
