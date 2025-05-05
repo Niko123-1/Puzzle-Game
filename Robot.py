@@ -23,7 +23,7 @@ class Robot:
         for barrel in barrels:
             on_target = False
             for target in targets:
-                if barrel.x == target.x and barrel.y == target.y:
+                if barrel.x == target.x and barrel.y == target.y and barrel.b_color == target.t_color:
                     on_target = True
                     break
             if not on_target:

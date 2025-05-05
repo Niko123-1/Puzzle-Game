@@ -24,24 +24,8 @@ def main():
         br.Barrel(1, 2, (43,213,134))
     ]
 
-    obstacles = []
-
-    for x in range(con.GRID_COLS):
-        obstacles.append(ob.Obstacle(x, 0))
-        obstacles.append(ob.Obstacle(x, con.GRID_ROWS - 1))
-
-    for y in range(1, con.GRID_ROWS - 1):
-        obstacles.append(ob.Obstacle(0, y))
-        obstacles.append(ob.Obstacle(con.GRID_COLS - 1, y))
-
-    obstacles.append(ob.Obstacle(3,1))
-    obstacles.append(ob.Obstacle(4, 1))
-    obstacles.append(ob.Obstacle(2, 3))
-    obstacles.append(ob.Obstacle(3, 3))
-    obstacles.append(ob.Obstacle(3, 4))
-    obstacles.append(ob.Obstacle(2, 4))
-    obstacles.append(ob.Obstacle(4, 4))
-    obstacles.append(ob.Obstacle(5, 4))
+    extra_obstacles = [(3, 1),(4, 1),(2, 3),(3, 3),(3, 4),(2, 4),(4, 4),(5, 4)]
+    obstacles = ob.Obstacle.place_obstacles(extra_obstacles)
 
     targets = []
 
