@@ -43,23 +43,27 @@ class Game:
         if hasattr(self, 'obstacles'):
             del self.obstacles
 
-        label = tk.Label(self.root, text="Выберите уровень:", font=("Arial", 14))
-        label.pack(pady=20)
+        label = tk.Label(self.root, text="Выберите уровень:", font=("Arial", 25))
+        label.pack(pady=20, anchor="w", padx=20)
 
-        level1_btn = tk.Button(self.root, text="Уровень 1", command=lambda: self.start_level(1), width=15, height=2)
-        level1_btn.pack(pady=10)
+        # Создаем фрейм для кнопок
+        button_frame = tk.Frame(self.root)
+        button_frame.pack(anchor="w", padx=20)
 
-        level2_btn = tk.Button(self.root, text="Уровень 2", command=lambda: self.start_level(2), width=15, height=2)
-        level2_btn.pack(pady=10)
+        level1_btn = tk.Button(button_frame, text="Уровень 1", command=lambda: self.start_level(1), width=10, height=4, font=("Arial", 14))
+        level1_btn.grid(row=0, column=0, padx=1, pady=2)
 
-        level3_btn = tk.Button(self.root, text="Уровень 3", command=lambda: self.start_level(3), width=15, height=2)
-        level3_btn.pack(pady=10)
+        level2_btn = tk.Button(button_frame, text="Уровень 2", command=lambda: self.start_level(2), width=10, height=4, font=("Arial", 14))
+        level2_btn.grid(row=0, column=1, padx=15, pady=15)
 
-        level4_btn = tk.Button(self.root, text="Уровень 4", command=lambda: self.start_level(4), width=15, height=2)
-        level4_btn.pack(pady=10)
+        level3_btn = tk.Button(button_frame, text="Уровень 3", command=lambda: self.start_level(3), width=10, height=4, font=("Arial", 14))
+        level3_btn.grid(row=0, column=2, padx=15, pady=15)
 
-        level5_btn = tk.Button(self.root, text="Уровень 5", command=lambda: self.start_level(5), width=15, height=2)
-        level5_btn.pack(pady=10)
+        level4_btn = tk.Button(button_frame, text="Уровень 4", command=lambda: self.start_level(4), width=10, height=4, font=("Arial", 14))
+        level4_btn.grid(row=0, column=3, padx=15, pady=15)
+
+        level5_btn = tk.Button(button_frame, text="Уровень 5", command=lambda: self.start_level(5), width=10, height=4, font=("Arial", 14))
+        level5_btn.grid(row=0, column=4, padx=6, pady=5)
 
     def clear_window(self):
         """Очищает окно от всех виджетов."""
@@ -253,9 +257,7 @@ class Game:
             if barrel.color != con.DEFAULT_BARREL_COLOR:
                 on_target = False
                 for target in self.targets:
-                    if (barrel.x == target.x and
-                            barrel.y == target.y and
-                            barrel.color == target.color):
+                    if (barrel.x == target.x and barrel.y == target.y and barrel.color == target.color):
                         on_target = True
                         barrel.raise_all()
                         break
@@ -265,7 +267,7 @@ class Game:
 
         if all_on_target:
             self.victory_shown = True
-            self.robot.update_smile(self.barrels, self.targets)
             messagebox.showinfo("Победа!", "Все бочки обезврежены!")
+            self.robot.update_smile(self.barrels, self.targets)
             self.root.after(100, self.level_menu)
             self.victory_shown = False
