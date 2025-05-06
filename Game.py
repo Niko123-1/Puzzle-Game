@@ -6,6 +6,7 @@ import Barrel as br
 import Target as tg
 import Obstacles as ob
 from enum import Enum
+import LevelConfig as lc
 
 class Direction(Enum):
     UP = 0
@@ -45,19 +46,13 @@ class Game:
         label = tk.Label(self.root, text="Выберите уровень:", font=("Arial", 14))
         label.pack(pady=20)
 
-        level1_btn = tk.Button(self.root, text="Уровень 1",
-                               command=lambda: self.start_level(1),
-                               width=15, height=2)
+        level1_btn = tk.Button(self.root, text="Уровень 1", command=lambda: self.start_level(1), width=15, height=2)
         level1_btn.pack(pady=10)
 
-        level2_btn = tk.Button(self.root, text="Уровень 2",
-                               command=lambda: self.start_level(2),
-                               width=15, height=2)
+        level2_btn = tk.Button(self.root, text="Уровень 2", command=lambda: self.start_level(2), width=15, height=2)
         level2_btn.pack(pady=10)
 
-        level3_btn = tk.Button(self.root, text="Уровень 3",
-                               command=lambda: self.start_level(3),
-                               width=15, height=2)
+        level3_btn = tk.Button(self.root, text="Уровень 3", command=lambda: self.start_level(3), width=15, height=2)
         level3_btn.pack(pady=10)
 
     def clear_window(self):
@@ -109,75 +104,37 @@ class Game:
         if hasattr(self, 'obstacles'):
             del self.obstacles
 
-        #Получаем размеры сетки для текущего уровня
+        # Получаем размеры сетки и конфигурацию уровня
         cols = con.GRID_COLS[level_num - 1]
         rows = con.GRID_ROWS[level_num - 1]
+        config = lc.LevelConfig.get_level_config(level_num)
 
-        # Препятствия и цели для разных уровней
-        if level_num == 1:
+        if not config:
+            return
 
-            self.robot = rb.Robot(self.canvas, 4, 2)
+        # Создаем робота
+        self.robot = rb.Robot(self.canvas, *config['robot_pos'])
 
-            self.barrels = [
-                br.Barrel(self.canvas, 5, 2, con.TARGET_COLOR1),
-                br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
-            ]
+        # Создаем бочки
+        self.barrels = [
+            br.Barrel(self.canvas, *barrel['pos'], barrel['color'])
+            for barrel in config['barrels']
+        ]
 
-            self.targets = [
-                tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
-                tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
-            ]
+        # Создаем цели
+        self.targets = [
+            tg.Target(self.canvas, *target['pos'], target['color'])
+            for target in config['targets']
+        ]
 
-            # Препятствия для уровня 1
-            self.obstacles = []
-            extra_obstacles = [(3, 1), (4, 1), (2, 3), (3, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
-
-        elif level_num == 2:
-
-            self.robot = rb.Robot(self.canvas, 1, 4)
-
-            self.barrels = [
-                br.Barrel(self.canvas, 2,2, con.TARGET_COLOR1),
-                br.Barrel(self.canvas, 2, 3, con.TARGET_COLOR2)
-            ]
-
-            self.targets = [
-                tg.Target(self.canvas, 3, 3, con.TARGET_COLOR1),
-                tg.Target(self.canvas, 3, 2, con.TARGET_COLOR2)
-            ]
-
-            # Препятствия для уровня 1
-            self.obstacles = []
-            extra_obstacles = [(1, 1), (2, 1), (4, 4)]
-
-        elif level_num == 3:
-
-            self.robot = rb.Robot(self.canvas, 3, 3)
-
-            self.barrels = [
-                br.Barrel(self.canvas, 2,2, con.TARGET_COLOR1),
-                br.Barrel(self.canvas, 4, 4, con.TARGET_COLOR2),
-                br.Barrel(self.canvas, 3, 2, con.DEFAULT_BARREL_COLOR),
-                br.Barrel(self.canvas, 4, 2, con.DEFAULT_BARREL_COLOR),
-                br.Barrel(self.canvas, 4, 3, con.DEFAULT_BARREL_COLOR),
-                br.Barrel(self.canvas, 2, 3, con.DEFAULT_BARREL_COLOR),
-                br.Barrel(self.canvas, 2, 4, con.DEFAULT_BARREL_COLOR),
-                br.Barrel(self.canvas, 3, 4, con.DEFAULT_BARREL_COLOR)
-            ]
-
-            self.targets = [
-                tg.Target(self.canvas, 4, 2, con.TARGET_COLOR1),
-                tg.Target(self.canvas, 2, 4, con.TARGET_COLOR2)
-            ]
-
-            # Препятствия для уровня 1
-            self.obstacles = []
-            extra_obstacles = [(2, 1), (1, 5), (4, 5)]
-
+        # Бочки должны отрисовываться поверх целей
         for barrel in self.barrels:
             barrel.raise_all()
 
-        # Границы для всех уровней
+        # Границы и препятствия
+        self.obstacles = []
+
+        # Границы для всех уровней - по периметру
         for x in range(cols):
             self.obstacles.append(ob.Obstacle(self.canvas, x, 0))
             self.obstacles.append(ob.Obstacle(self.canvas, x, rows - 1))
@@ -187,10 +144,11 @@ class Game:
             self.obstacles.append(ob.Obstacle(self.canvas, cols - 1, y))
 
         # Дополнительные препятствия
-        for (x, y) in extra_obstacles:
+        for (x, y) in config['extra_obstacles']:
             if 0 <= x < cols and 0 <= y < rows:
                 self.obstacles.append(ob.Obstacle(self.canvas, x, y))
 
+    # Привязка кнопок управления роботом
     def bind_keys(self):
         self.root.bind("<Up>", lambda e: self.move_robot(Direction.UP))
         self.root.bind("<Down>", lambda e: self.move_robot(Direction.DOWN))
@@ -198,6 +156,7 @@ class Game:
         self.root.bind("<Right>", lambda e: self.move_robot(Direction.RIGHT))
         self.root.bind("<Escape>", lambda e: self.root.destroy())
 
+    # Перемещение робота
     def move_robot(self, direction):
 
         self.robot.raise_all()
@@ -249,6 +208,7 @@ class Game:
         # Проверка победы
         self.check_victory()
 
+    # Перемещение бочек
     def move_barrel(self, barrel, dx, dy):
         new_x = barrel.x + dx
         new_y = barrel.y + dy
@@ -276,6 +236,7 @@ class Game:
         barrel.raise_all()
         return True
 
+    # Проверка завершения уровня
     def check_victory(self):
         if self.victory_shown:
             return
