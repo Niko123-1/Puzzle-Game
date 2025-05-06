@@ -88,6 +88,7 @@ class Robot(GameObject):
         self.x += dx
         self.y += dy
         self.update_position()
+        self.raise_all()
 
     def update_position(self):
         """Обновляет позиции всех элементов робота"""
@@ -150,3 +151,21 @@ class Robot(GameObject):
         if self.smile != all_on_target:  # Обновляем только если состояние изменилось
             self.smile = all_on_target
             self.update_mouth()  # Обновляем отображение рта
+            self.raise_all()  # Поднимаем все элементы после изменения
+
+    def raise_all(self):
+        """Поднимает все элементы робота на передний план"""
+        # Поднимаем основной прямоугольник
+        self.canvas.tag_raise(self.id)
+
+        # Поднимаем колеса
+        for wheel_id in self.wheel_ids:
+            self.canvas.tag_raise(wheel_id)
+
+        # Поднимаем глаза
+        for eye_id in self.eye_ids:
+            self.canvas.tag_raise(eye_id)
+
+        # Поднимаем рот
+        if self.mouth_id:
+            self.canvas.tag_raise(self.mouth_id)

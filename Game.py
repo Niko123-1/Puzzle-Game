@@ -156,7 +156,13 @@ class Game:
 
             self.barrels = [
                 br.Barrel(self.canvas, 2,2, con.TARGET_COLOR1),
-                br.Barrel(self.canvas, 4, 4, con.TARGET_COLOR2)
+                br.Barrel(self.canvas, 4, 4, con.TARGET_COLOR2),
+                br.Barrel(self.canvas, 3, 2, con.DEFAULT_BARREL_COLOR),
+                br.Barrel(self.canvas, 4, 2, con.DEFAULT_BARREL_COLOR),
+                br.Barrel(self.canvas, 4, 3, con.DEFAULT_BARREL_COLOR),
+                br.Barrel(self.canvas, 2, 3, con.DEFAULT_BARREL_COLOR),
+                br.Barrel(self.canvas, 2, 4, con.DEFAULT_BARREL_COLOR),
+                br.Barrel(self.canvas, 3, 4, con.DEFAULT_BARREL_COLOR)
             ]
 
             self.targets = [
@@ -167,6 +173,9 @@ class Game:
             # Препятствия для уровня 1
             self.obstacles = []
             extra_obstacles = [(2, 1), (1, 5), (4, 5)]
+
+        for barrel in self.barrels:
+            barrel.raise_all()
 
         # Границы для всех уровней
         for x in range(cols):
@@ -190,6 +199,9 @@ class Game:
         self.root.bind("<Escape>", lambda e: self.root.destroy())
 
     def move_robot(self, direction):
+
+        self.robot.raise_all()
+
         dx, dy = 0, 0
         if direction == Direction.UP:
             dy = -1
@@ -261,6 +273,7 @@ class Game:
 
         # Двигаем бочку
         barrel.move(dx, dy)
+        barrel.raise_all()
         return True
 
     def check_victory(self):
@@ -271,10 +284,10 @@ class Game:
         for barrel in self.barrels:
             on_target = False
             for target in self.targets:
-                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color:
+                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color and barrel.color != con.DEFAULT_BARREL_COLOR:
                     on_target = True
                     # Поднимаем эту бочку на передний план
-                    self.canvas.tag_raise(barrel.id)
+                    barrel.raise_all()
                     break
             if not on_target:
                 all_on_target = False

@@ -16,6 +16,8 @@ OBSTACLE_COLOR = "#6E73F7"
 TARGET_COLOR1 = "#D71F1F"
 TARGET_COLOR2 = "#2BD586"
 
+DEFAULT_BARREL_COLOR = "#928282"
+
 # Функция для получения размеров экрана для конкретного уровня
 def get_screen_size(level):
     level_index = level - 1  # преобразуем номер уровня в индекс
