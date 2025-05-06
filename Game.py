@@ -55,6 +55,12 @@ class Game:
         level3_btn = tk.Button(self.root, text="Уровень 3", command=lambda: self.start_level(3), width=15, height=2)
         level3_btn.pack(pady=10)
 
+        level4_btn = tk.Button(self.root, text="Уровень 4", command=lambda: self.start_level(4), width=15, height=2)
+        level4_btn.pack(pady=10)
+
+        level5_btn = tk.Button(self.root, text="Уровень 5", command=lambda: self.start_level(5), width=15, height=2)
+        level5_btn.pack(pady=10)
+
     def clear_window(self):
         """Очищает окно от всех виджетов."""
         for widget in self.root.winfo_children():
@@ -75,7 +81,7 @@ class Game:
 
         # Создаем новый canvas для игры с размерами для текущего уровня
         self.canvas = tk.Canvas(self.root, width=screen_width, height=screen_height, bg=con.WHITE)
-        self.canvas.pack()
+        self.canvas.place(relx=0.5, rely=0.5, anchor="center")
 
         # Настраиваем игру
         self.setup_game(level_num)

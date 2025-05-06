@@ -48,4 +48,47 @@ class LevelConfig:
                 ],
                 'extra_obstacles': [(2, 1), (1, 5), (4, 5)]
             }
+        elif level_num == 4:
+            return {
+                'robot_pos': (4, 1),
+                'barrels': [
+                    {'pos': (3, 4), 'color': con.TARGET_COLOR1},
+                    {'pos': (3, 2), 'color': con.TARGET_COLOR2},
+                    {'pos': (2, 2), 'color': con.TARGET_COLOR3},
+                    {'pos': (4, 2), 'color': con.TARGET_COLOR4},
+                    {'pos': (4, 4), 'color': con.TARGET_COLOR5},
+                ],
+                'targets': [
+                    {'pos': (2, 3), 'color': con.TARGET_COLOR1},
+                    {'pos': (3, 3), 'color': con.TARGET_COLOR2},
+                    {'pos': (4, 3), 'color': con.TARGET_COLOR3},
+                    {'pos': (5, 3), 'color': con.TARGET_COLOR4},
+                    {'pos': (6, 3), 'color': con.TARGET_COLOR5}
+                ],
+                'extra_obstacles': [(5, 1), (6, 1), (5, 2), (6, 2),(5, 4), (6, 4), (5, 5), (6, 5), (1, 4), (1, 5)]
+            }
+        elif level_num == 5:
+            return {
+                'robot_pos': (6, 1),
+                'barrels': [
+                    {'pos': (7, 4), 'color': con.TARGET_COLOR1},
+                    {'pos': (6, 3), 'color': con.TARGET_COLOR2},
+                    {'pos': (7, 2), 'color': con.TARGET_COLOR3},
+                    {'pos': (8, 3), 'color': con.TARGET_COLOR4},
+                    {'pos': (7, 3), 'color': con.TARGET_COLOR5},
+                    {'pos': (3, 4), 'color': con.DEFAULT_BARREL_COLOR},
+                    {'pos': (2, 3), 'color': con.DEFAULT_BARREL_COLOR},
+                    {'pos': (3, 2), 'color': con.DEFAULT_BARREL_COLOR},
+                    {'pos': (4, 3), 'color': con.DEFAULT_BARREL_COLOR},
+                    {'pos': (3, 3), 'color': con.DEFAULT_BARREL_COLOR}
+                ],
+                'targets': [
+                    {'pos': (3, 4), 'color': con.TARGET_COLOR1},
+                    {'pos': (2, 3), 'color': con.TARGET_COLOR2},
+                    {'pos': (3, 2), 'color': con.TARGET_COLOR3},
+                    {'pos': (4, 3), 'color': con.TARGET_COLOR4},
+                    {'pos': (3, 3), 'color': con.TARGET_COLOR5}
+                ],
+                'extra_obstacles': [(1,1),(2,1),(3,1),(4,1),(5,1),(9,1)]
+            }
         return None
