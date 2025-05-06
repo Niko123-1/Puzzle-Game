@@ -1,6 +1,6 @@
 import Constant as con
 from GameObject import GameObject
-import tkinter as tk  # Не забудьте импортировать tkinter
+import tkinter as tk
 
 
 class Barrel(GameObject):
@@ -25,12 +25,16 @@ class Barrel(GameObject):
         )
 
         # Рисуем знак токсичности (☠) поверх бочки
-        self.tox_symbol_id = self.canvas.create_text(
-            (x1 + x2) // 2, (y1 + y2) // 2,
-            text="☠",  # Символ черепа с костями
-            font=("Arial", int(con.CELL_WIDTH * 0.4)),  # Размер шрифта адаптивный
-            fill="black"  # Используем строку с цветом
-        )
+        if self.color != con.DEFAULT_BARREL_COLOR:
+            self.tox_symbol_id = self.canvas.create_text(
+                (x1 + x2) // 2, (y1 + y2) // 2,
+                text="☠",  # Символ черепа с костями
+                font=("Arial", int(con.CELL_WIDTH * 0.4)),
+                fill="black"
+            )
+
+        # Сразу поднимаем все элементы бочки
+        self.raise_all()
 
     def move(self, dx, dy):
         """Перемещает бочку и её знак токсичности"""
@@ -47,3 +51,15 @@ class Barrel(GameObject):
                 self.tox_symbol_id,
                 (x1 + x2) // 2, (y1 + y2) // 2
             )
+
+        # Поднимаем все элементы после перемещения
+        self.raise_all()
+
+    def raise_all(self):
+        """Поднимает все элементы бочки на передний план"""
+        # Поднимаем основную бочку
+        self.canvas.tag_raise(self.id)
+
+        # Поднимаем знак токсичности, если он есть
+        if self.tox_symbol_id:
+            self.canvas.tag_raise(self.tox_symbol_id)
