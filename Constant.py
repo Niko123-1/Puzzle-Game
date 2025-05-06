@@ -1,10 +1,10 @@
 # Константы
 CELL_WIDTH = 100
 CELL_HEIGHT = 100
-GRID_COLS = 7
-GRID_ROWS = 6
-SCREEN_WIDTH = GRID_COLS * CELL_WIDTH
-SCREEN_HEIGHT = GRID_ROWS * CELL_HEIGHT
+
+# Размеры сетки для каждого уровня (индекс 0 - уровень 1, индекс 1 - уровень 2 и т.д.)
+GRID_COLS = [7, 6, 7]
+GRID_ROWS = [6, 6, 7]
 
 # Цвета
 WHITE = "#FFFFFF"
@@ -15,3 +15,9 @@ EYE_COLOR = "#FFFFFF"
 OBSTACLE_COLOR = "#6E73F7"
 TARGET_COLOR1 = "#D71F1F"
 TARGET_COLOR2 = "#2BD586"
+
+# Функция для получения размеров экрана для конкретного уровня
+def get_screen_size(level):
+    level_index = level - 1  # преобразуем номер уровня в индекс
+    return (GRID_COLS[level_index] * CELL_WIDTH,
+            GRID_ROWS[level_index] * CELL_HEIGHT)

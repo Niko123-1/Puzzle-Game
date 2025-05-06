@@ -55,6 +55,11 @@ class Game:
                                width=15, height=2)
         level2_btn.pack(pady=10)
 
+        level3_btn = tk.Button(self.root, text="Уровень 3",
+                               command=lambda: self.start_level(3),
+                               width=15, height=2)
+        level3_btn.pack(pady=10)
+
     def clear_window(self):
         """Очищает окно от всех виджетов."""
         for widget in self.root.winfo_children():
@@ -70,22 +75,29 @@ class Game:
         self.current_level = level_num
         self.clear_window()
 
-        # Создаем новый canvas для игры
-        self.canvas = tk.Canvas(self.root, width=con.SCREEN_WIDTH, height=con.SCREEN_HEIGHT, bg=con.WHITE)
+        # Получаем размеры экрана для текущего уровня
+        screen_width, screen_height = con.get_screen_size(level_num)
+
+        # Создаем новый canvas для игры с размерами для текущего уровня
+        self.canvas = tk.Canvas(self.root, width=screen_width, height=screen_height, bg=con.WHITE)
         self.canvas.pack()
 
         # Настраиваем игру
         self.setup_game(level_num)
         self.bind_keys()
-        self.draw_grid()
+        self.draw_grid(level_num)
 
-    def draw_grid(self):
-        for x in range(0, con.SCREEN_WIDTH, con.CELL_WIDTH):
-            self.canvas.create_line(x, 0, x, con.SCREEN_HEIGHT, fill=con.GRID_COLOR)
-        for y in range(0, con.SCREEN_HEIGHT, con.CELL_HEIGHT):
-            self.canvas.create_line(0, y, con.SCREEN_WIDTH, y, fill=con.GRID_COLOR)
+    def draw_grid(self, level_num):
+        """Рисует сетку для текущего уровня."""
+        cols = con.GRID_COLS[level_num - 1]
+        rows = con.GRID_ROWS[level_num - 1]
 
-    def setup_game(self, level_num=1):
+        for x in range(0, cols * con.CELL_WIDTH, con.CELL_WIDTH):
+            self.canvas.create_line(x, 0, x, rows * con.CELL_HEIGHT, fill=con.GRID_COLOR)
+        for y in range(0, rows * con.CELL_HEIGHT, con.CELL_HEIGHT):
+            self.canvas.create_line(0, y, cols * con.CELL_WIDTH, y, fill=con.GRID_COLOR)
+
+    def setup_game(self, level_num):
         """Настраивает игровые объекты для выбранного уровня."""
         # Очищаем старые объекты если они есть
         if hasattr(self, 'robot'):
@@ -97,11 +109,15 @@ class Game:
         if hasattr(self, 'obstacles'):
             del self.obstacles
 
-        # Создаем робота
-        self.robot = rb.Robot(self.canvas, 4, 2)
+        #Получаем размеры сетки для текущего уровня
+        cols = con.GRID_COLS[level_num - 1]
+        rows = con.GRID_ROWS[level_num - 1]
 
         # Препятствия и цели для разных уровней
         if level_num == 1:
+
+            self.robot = rb.Robot(self.canvas, 4, 2)
+
             self.barrels = [
                 br.Barrel(self.canvas, 5, 2, con.TARGET_COLOR1),
                 br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
@@ -118,32 +134,52 @@ class Game:
 
         elif level_num == 2:
 
+            self.robot = rb.Robot(self.canvas, 1, 4)
+
             self.barrels = [
-                br.Barrel(self.canvas, 4, 2, con.TARGET_COLOR1),
-                br.Barrel(self.canvas, 1, 2, con.TARGET_COLOR2)
+                br.Barrel(self.canvas, 2,2, con.TARGET_COLOR1),
+                br.Barrel(self.canvas, 2, 3, con.TARGET_COLOR2)
             ]
 
             self.targets = [
-                tg.Target(self.canvas, 5, 1, con.TARGET_COLOR1),
-                tg.Target(self.canvas, 1, 4, con.TARGET_COLOR2)
+                tg.Target(self.canvas, 3, 3, con.TARGET_COLOR1),
+                tg.Target(self.canvas, 3, 2, con.TARGET_COLOR2)
             ]
 
             # Препятствия для уровня 1
             self.obstacles = []
-            extra_obstacles = [(3, 1), (4, 1), (3, 3), (2, 3), (3, 4), (2, 4), (4, 4), (5, 4)]
+            extra_obstacles = [(1, 1), (2, 1), (4, 4)]
+
+        elif level_num == 3:
+
+            self.robot = rb.Robot(self.canvas, 3, 3)
+
+            self.barrels = [
+                br.Barrel(self.canvas, 2,2, con.TARGET_COLOR1),
+                br.Barrel(self.canvas, 4, 4, con.TARGET_COLOR2)
+            ]
+
+            self.targets = [
+                tg.Target(self.canvas, 4, 2, con.TARGET_COLOR1),
+                tg.Target(self.canvas, 2, 4, con.TARGET_COLOR2)
+            ]
+
+            # Препятствия для уровня 1
+            self.obstacles = []
+            extra_obstacles = [(2, 1), (1, 5), (4, 5)]
 
         # Границы для всех уровней
-        for x in range(con.GRID_COLS):
+        for x in range(cols):
             self.obstacles.append(ob.Obstacle(self.canvas, x, 0))
-            self.obstacles.append(ob.Obstacle(self.canvas, x, con.GRID_ROWS - 1))
+            self.obstacles.append(ob.Obstacle(self.canvas, x, rows - 1))
 
-        for y in range(1, con.GRID_ROWS - 1):
+        for y in range(1, rows - 1):
             self.obstacles.append(ob.Obstacle(self.canvas, 0, y))
-            self.obstacles.append(ob.Obstacle(self.canvas, con.GRID_COLS - 1, y))
+            self.obstacles.append(ob.Obstacle(self.canvas, cols - 1, y))
 
         # Дополнительные препятствия
         for (x, y) in extra_obstacles:
-            if 0 <= x < con.GRID_COLS and 0 <= y < con.GRID_ROWS:
+            if 0 <= x < cols and 0 <= y < rows:
                 self.obstacles.append(ob.Obstacle(self.canvas, x, y))
 
     def bind_keys(self):
@@ -170,8 +206,12 @@ class Game:
         new_x = self.robot.x + dx
         new_y = self.robot.y + dy
 
+        # Получаем размеры сетки для текущего уровня
+        grid_cols = con.GRID_COLS[self.current_level - 1]
+        grid_rows = con.GRID_ROWS[self.current_level - 1]
+
         # Проверка границ
-        if not (0 <= new_x < con.GRID_COLS and 0 <= new_y < con.GRID_ROWS):
+        if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
             return
 
         # Проверка препятствий
@@ -201,8 +241,12 @@ class Game:
         new_x = barrel.x + dx
         new_y = barrel.y + dy
 
+        # Получаем размеры сетки для текущего уровня
+        grid_cols = con.GRID_COLS[self.current_level - 1]
+        grid_rows = con.GRID_ROWS[self.current_level - 1]
+
         # Проверка границ
-        if not (0 <= new_x < con.GRID_COLS and 0 <= new_y < con.GRID_ROWS):
+        if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
             return False
 
         # Проверка других бочек
@@ -227,7 +271,7 @@ class Game:
         for barrel in self.barrels:
             on_target = False
             for target in self.targets:
-                if barrel.x == target.x and barrel.y == target.y:
+                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color:
                     on_target = True
                     # Поднимаем эту бочку на передний план
                     self.canvas.tag_raise(barrel.id)
