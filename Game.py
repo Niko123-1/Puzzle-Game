@@ -282,21 +282,23 @@ class Game:
 
         all_on_target = True
         for barrel in self.barrels:
-            on_target = False
-            for target in self.targets:
-                if barrel.x == target.x and barrel.y == target.y and barrel.color == target.color and barrel.color != con.DEFAULT_BARREL_COLOR:
-                    on_target = True
-                    # Поднимаем эту бочку на передний план
-                    barrel.raise_all()
+            # Проверяем только цветные бочки (не серые)
+            if barrel.color != con.DEFAULT_BARREL_COLOR:
+                on_target = False
+                for target in self.targets:
+                    if (barrel.x == target.x and
+                            barrel.y == target.y and
+                            barrel.color == target.color):
+                        on_target = True
+                        barrel.raise_all()
+                        break
+                if not on_target:
+                    all_on_target = False
                     break
-            if not on_target:
-                all_on_target = False
-                break
 
         if all_on_target:
             self.victory_shown = True
             self.robot.update_smile(self.barrels, self.targets)
             messagebox.showinfo("Победа!", "Все бочки обезврежены!")
-            # Возвращаемся в меню
             self.root.after(100, self.level_menu)
-            self.victory_shown = False  # Сбрасываем флаг для следующей игры
+            self.victory_shown = False
