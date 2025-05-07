@@ -30,7 +30,7 @@ class Barrel(GameObject):
             self.tox_symbol_id = self.canvas.create_text(
                 (x1 + x2) // 2, (y1 + y2) // 2,
                 text="☠",  # Символ черепа с костями
-                font=("Arial", int(con.CELL_WIDTH * 0.4)),
+                font=("Arial", int(con.CELL_WIDTH * 0.5)),
                 fill="black"
             )
 
