@@ -51,19 +51,22 @@ class Game:
         button_frame.pack(padx=20)
 
         level1_btn = tk.Button(button_frame, text="Уровень 1", command=lambda: self.start_level(1), width=10, height=4, font=("Arial", 14))
-        level1_btn.grid(row=0, column=0, padx=15, pady=200)
+        level1_btn.grid(row=0, column=0, padx=15, pady=20)
 
         level2_btn = tk.Button(button_frame, text="Уровень 2", command=lambda: self.start_level(2), width=10, height=4, font=("Arial", 14))
-        level2_btn.grid(row=0, column=1, padx=15, pady=200)
+        level2_btn.grid(row=0, column=1, padx=15, pady=20)
 
         level3_btn = tk.Button(button_frame, text="Уровень 3", command=lambda: self.start_level(3), width=10, height=4, font=("Arial", 14))
-        level3_btn.grid(row=0, column=2, padx=15, pady=200)
+        level3_btn.grid(row=0, column=2, padx=15, pady=20)
 
         level4_btn = tk.Button(button_frame, text="Уровень 4", command=lambda: self.start_level(4), width=10, height=4, font=("Arial", 14))
-        level4_btn.grid(row=0, column=3, padx=15, pady=200)
+        level4_btn.grid(row=0, column=3, padx=15, pady=20)
 
         level5_btn = tk.Button(button_frame, text="Уровень 5", command=lambda: self.start_level(5), width=10, height=4, font=("Arial", 14))
-        level5_btn.grid(row=0, column=4, padx=15, pady=200)
+        level5_btn.grid(row=0, column=4, padx=15, pady=20)
+
+        level6_btn = tk.Button(button_frame, text="Уровень 6", command=lambda: self.start_level(6), width=10, height=4, font=("Arial", 14))
+        level6_btn.grid(row=1, column=0, padx=15, pady=20)
 
     def clear_window(self):
         """Очищает окно от всех виджетов."""
@@ -80,8 +83,11 @@ class Game:
         self.current_level = level_num
         self.clear_window()
 
+        cols = lc.LevelConfig.get_screen_size(level_num)[0]
+        rows = lc.LevelConfig.get_screen_size(level_num)[1]
+
         # Получаем размеры экрана для текущего уровня
-        screen_width, screen_height = con.get_screen_size(level_num)
+        screen_width, screen_height = con.CELL_WIDTH*cols,con.CELL_HEIGHT*rows
 
         # Создаем новый canvas для игры с размерами для текущего уровня
         self.canvas = tk.Canvas(self.root, width=screen_width, height=screen_height, bg=con.WHITE)
@@ -94,8 +100,8 @@ class Game:
 
     def draw_grid(self, level_num):
         """Рисует сетку для текущего уровня."""
-        cols = con.GRID_COLS[level_num - 1]
-        rows = con.GRID_ROWS[level_num - 1]
+        cols = lc.LevelConfig.get_screen_size(level_num)[0]
+        rows = lc.LevelConfig.get_screen_size(level_num)[1]
 
         for x in range(0, cols * con.CELL_WIDTH, con.CELL_WIDTH):
             self.canvas.create_line(x, 0, x, rows * con.CELL_HEIGHT, fill=con.GRID_COLOR)
@@ -145,8 +151,8 @@ class Game:
         return_btn.pack()
 
         # Получаем размеры сетки и конфигурацию уровня
-        cols = con.GRID_COLS[level_num - 1]
-        rows = con.GRID_ROWS[level_num - 1]
+        cols = lc.LevelConfig.get_screen_size(level_num)[0]
+        rows = lc.LevelConfig.get_screen_size(level_num)[1]
         config = lc.LevelConfig.get_level_config(level_num)
 
         if not config:
@@ -218,8 +224,8 @@ class Game:
         new_y = self.robot.y + dy
 
         # Получаем размеры сетки для текущего уровня
-        grid_cols = con.GRID_COLS[self.current_level - 1]
-        grid_rows = con.GRID_ROWS[self.current_level - 1]
+        grid_cols = lc.LevelConfig.get_screen_size(self.current_level)[0]
+        grid_rows = lc.LevelConfig.get_screen_size(self.current_level)[1]
 
         # Проверка границ
         if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
@@ -254,8 +260,8 @@ class Game:
         new_y = barrel.y + dy
 
         # Получаем размеры сетки для текущего уровня
-        grid_cols = con.GRID_COLS[self.current_level - 1]
-        grid_rows = con.GRID_ROWS[self.current_level - 1]
+        grid_cols = lc.LevelConfig.get_screen_size(self.current_level)[0]
+        grid_rows = lc.LevelConfig.get_screen_size(self.current_level)[1]
 
         # Проверка границ
         if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
