@@ -122,6 +122,27 @@ class LevelConfig:
                 ],
                 'extra_obstacles': [(1,4),(2,3),(5,3),(7,1)]
             }
+        elif level_num == 7:
+            return {
+                'grid_size': (10, 8),
+                'robot_pos': (2, 4),
+                'barrels': [
+                    {'pos': (2, 3), 'color': con.TARGET_COLOR1},
+                    {'pos': (3, 3), 'color': con.TARGET_COLOR2},
+                    {'pos': (4, 3), 'color': con.TARGET_COLOR3},
+                    {'pos': (5, 3), 'color': con.TARGET_COLOR4},
+                    {'pos': (6, 3), 'color': con.TARGET_COLOR5}
+                ],
+                'targets': [
+                    {'pos': (8, 6), 'color': con.TARGET_COLOR1},
+                    {'pos': (8, 5), 'color': con.TARGET_COLOR2},
+                    {'pos': (8, 4), 'color': con.TARGET_COLOR3},
+                    {'pos': (8, 3), 'color': con.TARGET_COLOR4},
+                    {'pos': (8, 2), 'color': con.TARGET_COLOR5}
+                ],
+                'extra_obstacles': [(1,1),(2,1),(3,1),(4,1),(5,1),(1,4),(1,5),(1,6),(7,4),(7,5),(7,6),
+                                    (1,5),(1,6),(2,5),(2,6),(3,5),(3,6),(4,5),(4,6),(5,5),(5,6),(6,5),(6,6),(8,1)]
+            }
         return None
 
     @staticmethod
