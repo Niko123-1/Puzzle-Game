@@ -44,11 +44,11 @@ class Game:
             del self.obstacles
 
         label = tk.Label(self.root, text="Выберите уровень:", font=("Arial", 25))
-        label.pack(pady=20, anchor="w", padx=20)
+        label.pack(pady=20, padx=20)
 
         # Создаем фрейм для кнопок
         button_frame = tk.Frame(self.root)
-        button_frame.pack(anchor="w", padx=20)
+        button_frame.pack(padx=20)
 
         level1_btn = tk.Button(button_frame, text="Уровень 1", command=lambda: self.start_level(1), width=10, height=4, font=("Arial", 14))
         level1_btn.grid(row=0, column=0, padx=1, pady=2)
