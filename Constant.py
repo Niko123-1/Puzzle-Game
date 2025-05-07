@@ -4,15 +4,13 @@ CELL_HEIGHT = 120
 
 # Цвета
 WHITE = "#FFFFFF"
-GRID_COLOR = "#000000"
-ROBOT_COLOR = "#B3BC3E" # горчичный
-DETAIL_COLOR = "#000000" # черный
-EYE_COLOR = "#FFFFFF" # белый
+BLACK = "#000000"
+ROBOT_COLOR = "#787A53" # горчичный
 OBSTACLE_COLOR = "#6E73F7" # синий
-TARGET_COLOR1 = "#FF0000" # красный
-TARGET_COLOR2 = "#80FF00" # зеленый
+TARGET_COLOR1 = "#E10000" # красный
+TARGET_COLOR2 = "#4DFF00" # зеленый
 TARGET_COLOR3 = "#1CF9F2" # голубой
-TARGET_COLOR4 = "#F91CCD" # фуксия
-TARGET_COLOR5 = "#E1F009" # желтый
+TARGET_COLOR4 = "#D603FF" # фуксия
+TARGET_COLOR5 = "#FFFF00" # желтый
 DEFAULT_BARREL_COLOR = "#928282" # серый
 

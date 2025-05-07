@@ -108,9 +108,9 @@ class Game:
         rows = lc.LevelConfig.get_screen_size(level_num)[1]
 
         for x in range(0, cols * con.CELL_WIDTH, con.CELL_WIDTH):
-            self.canvas.create_line(x, 0, x, rows * con.CELL_HEIGHT, fill=con.GRID_COLOR)
+            self.canvas.create_line(x, 0, x, rows * con.CELL_HEIGHT, fill=con.BLACK)
         for y in range(0, rows * con.CELL_HEIGHT, con.CELL_HEIGHT):
-            self.canvas.create_line(0, y, cols * con.CELL_WIDTH, y, fill=con.GRID_COLOR)
+            self.canvas.create_line(0, y, cols * con.CELL_WIDTH, y, fill=con.BLACK)
 
     def setup_game(self, level_num):
         """Настраивает игровые объекты для выбранного уровня."""

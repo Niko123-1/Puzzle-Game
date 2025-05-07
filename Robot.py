@@ -33,7 +33,7 @@ class Robot(GameObject):
             wheel_id = self.canvas.create_rectangle(
                 corner[0], corner[1],
                 corner[0] + small_size, corner[1] + small_size,
-                fill=con.DETAIL_COLOR, outline="black"
+                fill=con.BLACK, outline="black"
             )
             self.wheel_ids.append(wheel_id)
 
@@ -45,12 +45,12 @@ class Robot(GameObject):
         left_eye = self.canvas.create_oval(
             left_eye_pos[0] - eye_radius, left_eye_pos[1] - eye_radius,
             left_eye_pos[0] + eye_radius, left_eye_pos[1] + eye_radius,
-            fill=con.EYE_COLOR
+            fill=con.WHITE
         )
         right_eye = self.canvas.create_oval(
             right_eye_pos[0] - eye_radius, right_eye_pos[1] - eye_radius,
             right_eye_pos[0] + eye_radius, right_eye_pos[1] + eye_radius,
-            fill=con.EYE_COLOR
+            fill=con.WHITE
         )
         self.eye_ids.extend([left_eye, right_eye])
 
@@ -73,14 +73,14 @@ class Robot(GameObject):
             self.mouth_id = self.canvas.create_arc(
                 x1 + con.CELL_WIDTH // 4, y1 + con.CELL_HEIGHT // 2 - 5,
                 x2 - con.CELL_WIDTH // 4, y1 + con.CELL_HEIGHT // 2 + 25,
-                start=180, extent=180, style=tk.ARC, width=2, outline=con.EYE_COLOR
+                start=180, extent=180, style=tk.ARC, width=2, outline=con.WHITE
             )
         else:
             # Рисуем прямой рот (прямоугольник)
             self.mouth_id = self.canvas.create_rectangle(
                 x1 + con.CELL_WIDTH // 4, y1 + con.CELL_HEIGHT // 2 + 10,
                 x2 - con.CELL_WIDTH // 4, y1 + con.CELL_HEIGHT // 2 + 15,
-                fill=con.EYE_COLOR
+                fill=con.WHITE
             )
 
     def move(self, dx, dy):
