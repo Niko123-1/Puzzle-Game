@@ -114,6 +114,36 @@ class Game:
         if hasattr(self, 'obstacles'):
             del self.obstacles
 
+        button_frame = tk.Frame(self.root)
+        button_frame.pack(side=tk.BOTTOM, anchor=tk.SE, padx=5, pady=5)  # SE = South-East (низ-право)
+
+        # Новая кнопка (располагается выше)
+        new_btn = tk.Button(
+                               button_frame,
+                               text="Начать заново",
+                               command=lambda: self.start_level(level_num),
+                               width=20, height=4,
+                               font=("Arial", 14),
+                               bg="#4CAF50",  # Зеленый фон
+                               fg="white",  # Белый текст
+                               activebackground="#45a049",  # Темно-зеленый при нажатии
+                               activeforeground="white"
+                               )
+        new_btn.pack(pady=(0, 5))  # Отступ снизу 5px
+
+        return_btn = tk.Button(
+                               button_frame,
+                               text="В главное меню",
+                               command=lambda: self.level_menu(),
+                               width=20, height=4,
+                               font=("Arial", 14),
+                               bg="#4CAF50",  # Зеленый фон
+                               fg="white",  # Белый текст
+                               activebackground="#45a049",  # Темно-зеленый при нажатии
+                               activeforeground="white"
+                               )
+        return_btn.pack()
+
         # Получаем размеры сетки и конфигурацию уровня
         cols = con.GRID_COLS[level_num - 1]
         rows = con.GRID_ROWS[level_num - 1]
