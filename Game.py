@@ -277,6 +277,8 @@ class Game:
         return True
 
     # Проверка завершения уровня
+
+
     def check_victory(self):
         if self.victory_shown:
             return
@@ -287,13 +289,16 @@ class Game:
             if barrel.color != con.DEFAULT_BARREL_COLOR:
                 on_target = False
                 for target in self.targets:
-                    if (barrel.x == target.x and barrel.y == target.y and barrel.color == target.color):
+                    if (barrel.x == target.x and
+                            barrel.y == target.y and
+                            barrel.color == target.color):
                         on_target = True
+                        barrel.defuse()  # Удаляем символ токсичности
                         barrel.raise_all()
                         break
+
                 if not on_target:
                     all_on_target = False
-                    break
 
         if all_on_target:
             self.victory_shown = True

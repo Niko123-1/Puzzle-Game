@@ -1,16 +1,17 @@
 import Constant as con
 from GameObject import GameObject
-import tkinter as tk
 
 
 class Barrel(GameObject):
     def __init__(self, canvas, x, y, color):
+        """Инициализация бочки"""
         super().__init__(canvas, x, y)
         self.color = color
         self.tox_symbol_id = None  # ID знака токсичности на canvas
         self.draw()
 
     def draw(self):
+        """Отрисовка бочки"""
         x1 = self.x * con.CELL_WIDTH
         y1 = self.y * con.CELL_HEIGHT
         x2 = x1 + con.CELL_WIDTH
@@ -33,7 +34,7 @@ class Barrel(GameObject):
                 fill="black"
             )
 
-        # Сразу поднимаем все элементы бочки
+        # Поднимаем все элементы бочки
         self.raise_all()
 
     def move(self, dx, dy):
@@ -47,10 +48,7 @@ class Barrel(GameObject):
             x2 = x1 + con.CELL_WIDTH
             y2 = y1 + con.CELL_HEIGHT
 
-            self.canvas.coords(
-                self.tox_symbol_id,
-                (x1 + x2) // 2, (y1 + y2) // 2
-            )
+            self.canvas.coords(self.tox_symbol_id, (x1 + x2) // 2, (y1 + y2) // 2)
 
         # Поднимаем все элементы после перемещения
         self.raise_all()
@@ -63,3 +61,8 @@ class Barrel(GameObject):
         # Поднимаем знак токсичности, если он есть
         if self.tox_symbol_id:
             self.canvas.tag_raise(self.tox_symbol_id)
+
+    def defuse(self):
+        """Обезвреживает бочку - убираем знак токсичности"""
+        if self.tox_symbol_id:
+            self.canvas.itemconfig(self.tox_symbol_id, text="✓", fill="black")
