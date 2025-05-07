@@ -51,19 +51,19 @@ class Game:
         button_frame.pack(padx=20)
 
         level1_btn = tk.Button(button_frame, text="Уровень 1", command=lambda: self.start_level(1), width=10, height=4, font=("Arial", 14))
-        level1_btn.grid(row=0, column=0, padx=1, pady=2)
+        level1_btn.grid(row=0, column=0, padx=15, pady=200)
 
         level2_btn = tk.Button(button_frame, text="Уровень 2", command=lambda: self.start_level(2), width=10, height=4, font=("Arial", 14))
-        level2_btn.grid(row=0, column=1, padx=15, pady=15)
+        level2_btn.grid(row=0, column=1, padx=15, pady=200)
 
         level3_btn = tk.Button(button_frame, text="Уровень 3", command=lambda: self.start_level(3), width=10, height=4, font=("Arial", 14))
-        level3_btn.grid(row=0, column=2, padx=15, pady=15)
+        level3_btn.grid(row=0, column=2, padx=15, pady=200)
 
         level4_btn = tk.Button(button_frame, text="Уровень 4", command=lambda: self.start_level(4), width=10, height=4, font=("Arial", 14))
-        level4_btn.grid(row=0, column=3, padx=15, pady=15)
+        level4_btn.grid(row=0, column=3, padx=15, pady=200)
 
         level5_btn = tk.Button(button_frame, text="Уровень 5", command=lambda: self.start_level(5), width=10, height=4, font=("Arial", 14))
-        level5_btn.grid(row=0, column=4, padx=6, pady=5)
+        level5_btn.grid(row=0, column=4, padx=15, pady=200)
 
     def clear_window(self):
         """Очищает окно от всех виджетов."""
