@@ -6,7 +6,7 @@ import Barrel as br
 import Target as tg
 import Obstacles as ob
 from enum import Enum
-import LevelConfig as lc
+import Levels as lv
 
 class Direction(Enum):
     UP = 0
@@ -27,6 +27,18 @@ class Game:
 
         # Показываем меню уровней
         self.level_menu()
+
+    @staticmethod
+    def get_level_config(level_num):
+        return lv.levels[level_num]
+
+    @staticmethod
+    def get_screen_size(level_num):
+        """Возвращает кол-во квадратов, нужного для задания размера экрана для указанного уровня."""
+        config = Game.get_level_config(level_num)
+        if config and 'grid_size' in config:
+            return config['grid_size']
+        return None
 
     def level_menu(self):
         """Создаёт интерфейс выбора уровня."""
@@ -87,8 +99,8 @@ class Game:
         self.current_level = level_num
         self.clear_window()
 
-        cols = lc.LevelConfig.get_screen_size(level_num)[0]
-        rows = lc.LevelConfig.get_screen_size(level_num)[1]
+        cols = Game.get_screen_size(level_num)[0]
+        rows = Game.get_screen_size(level_num)[1]
 
         # Получаем размеры экрана для текущего уровня
         screen_width, screen_height = con.CELL_WIDTH*cols,con.CELL_HEIGHT*rows
@@ -104,8 +116,8 @@ class Game:
 
     def draw_grid(self, level_num):
         """Рисует сетку для текущего уровня."""
-        cols = lc.LevelConfig.get_screen_size(level_num)[0]
-        rows = lc.LevelConfig.get_screen_size(level_num)[1]
+        cols = Game.get_screen_size(level_num)[0]
+        rows = Game.get_screen_size(level_num)[1]
 
         for x in range(0, cols * con.CELL_WIDTH, con.CELL_WIDTH):
             self.canvas.create_line(x, 0, x, rows * con.CELL_HEIGHT, fill=con.BLACK)
@@ -155,9 +167,9 @@ class Game:
         return_btn.pack()
 
         # Получаем размеры сетки и конфигурацию уровня
-        cols = lc.LevelConfig.get_screen_size(level_num)[0]
-        rows = lc.LevelConfig.get_screen_size(level_num)[1]
-        config = lc.LevelConfig.get_level_config(level_num)
+        cols = Game.get_screen_size(level_num)[0]
+        rows = Game.get_screen_size(level_num)[1]
+        config = Game.get_level_config(level_num)
 
         if not config:
             return
@@ -228,8 +240,8 @@ class Game:
         new_y = self.robot.y + dy
 
         # Получаем размеры сетки для текущего уровня
-        grid_cols = lc.LevelConfig.get_screen_size(self.current_level)[0]
-        grid_rows = lc.LevelConfig.get_screen_size(self.current_level)[1]
+        grid_cols = Game.get_screen_size(self.current_level)[0]
+        grid_rows = Game.get_screen_size(self.current_level)[1]
 
         # Проверка границ
         if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
@@ -264,8 +276,8 @@ class Game:
         new_y = barrel.y + dy
 
         # Получаем размеры сетки для текущего уровня
-        grid_cols = lc.LevelConfig.get_screen_size(self.current_level)[0]
-        grid_rows = lc.LevelConfig.get_screen_size(self.current_level)[1]
+        grid_cols = Game.get_screen_size(self.current_level)[0]
+        grid_rows = Game.get_screen_size(self.current_level)[1]
 
         # Проверка границ
         if not (0 <= new_x < grid_cols and 0 <= new_y < grid_rows):
