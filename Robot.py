@@ -6,9 +6,9 @@ class Robot(GameObject):
     def __init__(self, canvas, x, y):
         super().__init__(canvas, x, y)
         self.smile = False
-        self.wheel_ids = []  # Для хранения ID колёс
-        self.eye_ids = []  # Для хранения ID глаз
-        self.mouth_id = None  # Для хранения ID рта
+        self.wheel_ids = []
+        self.eye_ids = []
+        self.mouth_id = None
         self.draw()
 
     def draw(self):
@@ -92,6 +92,8 @@ class Robot(GameObject):
 
     def update_position(self):
         """Обновляет позиции всех элементов робота"""
+
+        move_count = 0
         x1 = self.x * con.CELL_WIDTH
         y1 = self.y * con.CELL_HEIGHT
         x2 = x1 + con.CELL_WIDTH
