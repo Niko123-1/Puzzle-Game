@@ -128,5 +128,25 @@ levels = {
                             (7,6),(1,5),(1,6),(2,5),(2,6),
                             (3,5),(3,6),(4,5),(4,6),(5,5),
                             (5,6),(6,5),(6,6),(8,1)]
+
+    },
+    8: {
+        'grid_size': (7, 7),
+        'robot_pos': (3, 3),
+        'barrels': [
+            {'pos': (3, 2), 'color': con.TARGET_COLOR1},
+            {'pos': (2, 2), 'color': con.TARGET_COLOR2},
+            {'pos': (2, 3), 'color': con.TARGET_COLOR3},
+            {'pos': (4, 3), 'color': con.DEFAULT_BARREL_COLOR},
+            {'pos': (4, 4), 'color': con.DEFAULT_BARREL_COLOR},
+            {'pos': (3, 4), 'color': con.DEFAULT_BARREL_COLOR}
+        ],
+        'targets': [
+            {'pos': (4, 3), 'color': con.TARGET_COLOR1},
+            {'pos': (4, 4), 'color': con.TARGET_COLOR2},
+            {'pos': (3, 4), 'color': con.TARGET_COLOR3}
+        ],
+        'extra_obstacles': [(5,1),(5,2),(5,4),(5,5),(1,4),(1,5),(2,4),(2,5)]
+
     }
 }

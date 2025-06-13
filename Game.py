@@ -84,6 +84,10 @@ class Game:
                                font=("Arial", 14))
         level7_btn.grid(row=1, column=1, padx=15, pady=20)
 
+        level8_btn = tk.Button(button_frame, text="Уровень 8", command=lambda: self.start_level(8), width=10, height=4,
+                               font=("Arial", 14))
+        level8_btn.grid(row=1, column=2, padx=15, pady=20)
+
     def clear_window(self):
         """Очищает окно от всех виджетов."""
         for widget in self.root.winfo_children():
